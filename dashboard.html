@@ -1,0 +1,103 @@
+<!-- 
+  Cloud Cast Dashboard
+  This is the main dashboard page for the weather app.
+  Comments are added throughout to help you (the student) understand the structure and logic.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud Cast Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { poppins: ["Poppins", "sans-serif"] } } } }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body class="h-screen w-screen bg-no-repeat bg-cover bg-center font-poppins" style="background-image: url('./Images/Background.PNG');">
+  <!-- Top Navbar -->
+  <div class="w-full flex items-center justify-between bg-blue-900 bg-opacity-70 px-6 py-3">
+    <div class="flex items-center">
+      <img src="Images/logo.png" class="w-15 h-12 mr-2" alt="Cloud Cast Logo">
+      <span class="text-white text-2xl font-bold italic">Cloud Cast</span>
+    </div>
+    <div class="flex items-center space-x-6 relative">
+      <button id="notifBtn" class="focus:outline-none relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        <div id="notifDropdown" class="hidden absolute right-0 mt-3 w-64 bg-white rounded-lg shadow-lg z-50">
+          <div class="p-4 border-b font-semibold text-blue-900">Notifications</div>
+          <div class="notif-list max-h-64 overflow-y-auto divide-y"></div>
+        </div>
+      </button>
+      <div class="relative">
+        <button id="menuBtn" class="focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div id="menuDropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-lg z-50 flex flex-col items-center py-6">
+          <button class="w-32 bg-blue-700 hover:bg-blue-800 text-white py-2 rounded-full font-semibold" onclick="window.location.href='login.html';">Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Main Layout -->
+  <div class="flex h-[calc(100vh-64px)]">
+    <!-- Sidebar -->
+    <div class="bg-white bg-opacity-90 w-48 flex flex-col pt-8 shadow-lg items-center justify-between">
+      <div class="w-full flex flex-col items-center">
+        <a href="profile.html" class="text-blue-900 font-semibold text-lg ml-2 mb-6 self-start hover:underline">Profile</a>
+        <a href="dashboard.html" class="text-blue-900 font-semibold text-lg mb-6 ml-2 self-start hover:underline">Home</a>
+        <a href="history.html" class="text-blue-900 font-semibold text-lg ml-2 mb-6 self-start hover:underline">History</a>
+      </div>
+      <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-300 mb-6">
+        <iframe id="cityMap" class="w-full h-full" frameborder="0" src="https://www.google.com/maps?q=Manila&output=embed&z=10" allowfullscreen="" aria-hidden="false" tabindex="0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+      <div class="bg-white bg-opacity-95 rounded-xl shadow-lg p-8 max-w-5xl mx-auto">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-4">
+            <span class="text-2xl font-bold text-blue-900">City Name</span>
+            <button id="setDefaultButton" class="bg-blue-900 text-white text-xs font-bold px-3 py-1 rounded hover:bg-blue-800 transition">SET AS DEFAULT</button>
+          </div>
+          <div class="flex items-center">
+            <input id="cityInput" type="text" placeholder="Search city..." class="border border-gray-400 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <button class="ml-2" id="searchButton">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" fill="none"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <hr class="border-t-2 border-black mb-6">
+        <div class="grid grid-cols-7 gap-6 text-center font-bold text-blue-900 text-lg mb-6" id="weatherDaysGrid">
+          <div id="day0" class="border-2 border-blue-900 rounded-xl p-2 bg-white bg-opacity-80 shadow"></div>
+          <div id="day1" class="border-2 border-blue-900 rounded-xl p-2 bg-white bg-opacity-80 shadow"></div>
+          <div id="day2" class="border-2 border-blue-900 rounded-xl p-2 bg-white bg-opacity-80 shadow"></div>
+          <div id="day3" class="border-2 border-blue-900 rounded-xl p-2 bg-white bg-opacity-80 shadow"></div>
+          <div id="day4" class="border-2 border-blue-900 rounded-xl p-2 bg-white bg-opacity-80 shadow"></div>
+          <div id="day5" class="border-2 border-blue-900 rounded-xl p-2 bg-white bg-opacity-80 shadow"></div>
+          <div id="day6" class="border-2 border-blue-900 rounded-xl p-2 bg-white bg-opacity-80 shadow"></div>
+        </div>
+        <div id="weatherInfo"></div>
+      </div>
+    </div>
+    <div class="weatherContainer2"></div>
+  </div>
+  <!-- JS Scripts -->
+  <script src="database.js"></script>
+  <script src="notification.js"></script>
+  <script src="menu.js"></script>
+  <script src="map.js"></script>
+  <script src="weather.js"></script>
+  <script src="session.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 // Connect to Supabase
 const SUPABASE_URL = 'https://nsosynftljmzagnvyiaq.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zb3N5bmZ0bGptemFnbnZ5aWFxIiwicm9zZSI6ImFub24iLCJpYXQiOjE3NDgwMTM2NDUsImV4cCI6MjA2MzU4OTY0NX0.Jth_lbwi3o49OQqhCOMWLwK_ig-JzZik-YEP0tRMcK0';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zb3N5bmZ0bGptemFnbnZ5aWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwMTM2NDUsImV4cCI6MjA2MzU4OTY0NX0.Jth_lbwi3o49OQqhCOMWLwK_ig-JzZik-YEP0tRMcK0';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Add user to database
